@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -13,12 +11,14 @@ public class Bola : MonoBehaviour
     public TMP_Text scoreleft;
     public TMP_Text scoreright;
     public TMP_Text pauseText;
-    public TrailRenderer trail;
-    
+    public TrailRenderer trailBola;
+    public ParticleSystem expolsionBola;
+    public bool hitted;
 
     void Start()
-    { 
-        initialPush();
+    {
+        expolsionBola = GetComponentInChildren<ParticleSystem>();
+        trailBola = GetComponentInChildren<TrailRenderer>();
         pauseText.enabled = false;
     }
 
@@ -29,68 +29,79 @@ public class Bola : MonoBehaviour
             Time.timeScale = 0;
             pauseText.enabled = true;
         }
-        
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             Time.timeScale = 1;
             pauseText.enabled = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && scoreleft.enabled)
         {
-            GetComponentInChildren<TrailRenderer>().emitting = !GetComponentInChildren<TrailRenderer>().emitting;
+            initialPush();
         }
-    }
 
-    public Vector2 Test()
-    {
-        return rb2d.position;
-    }
+        if(hitted && expolsionBola.isStopped)
+        {
+            RespawnBall();
+            hitted = false;
+        }
 
+    }
     private void initialPush()
     {
         Vector2 dir;
-        if(Random.Range(0, 2) > 0)
+        if (Random.Range(0, 2) > 0)
         {
             dir = Vector2.left;
-        }else
+        }
+        else
         {
             dir = Vector2.right;
         }
         dir.y = Random.Range(-initialAngle, initialAngle);
         rb2d.velocity = dir * startVelocity;
-        GetComponentInChildren<TrailRenderer>().emitting = true;
+        scoreleft.enabled = false;
+        scoreright.enabled = false;
+        trailBola.emitting = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-       // GetComponentInChildren<TrailRenderer>().emitting = false;
         if (collision.gameObject.tag == "Respawn")
         {
             if (rb2d.velocity.x > 0)
             {
                 tempScoreRight++;
+                hitted = true;
             }
             if (rb2d.velocity.x < 0)
             {
                 tempScoreLeft++;
-
+                hitted = true;
             }
-            GetComponentInChildren<TrailRenderer>().emitting = false;
-
-            scoreleft.text = tempScoreLeft.ToString();
-            scoreright.text = tempScoreRight.ToString();
-            Vector2 reset = new Vector2(0, 0);
-            rb2d.position = reset;
-            initialPush();
+            expolsionBola.Play();
+            trailBola.emitting = false;
         }
+    }
+
+private void RespawnBall()
+    {
+        scoreleft.text = tempScoreLeft.ToString();
+        scoreright.text = tempScoreRight.ToString();
+        Vector2 reset = new Vector2(0, 0);
+        rb2d.position = reset;
+        rb2d.velocity = reset * 0f;
+        scoreleft.enabled = true;
+        scoreright.enabled = true;
     }
 }
 
-/*
-cuando apreto un boton el p2 se convierte en ia
 
-cuando marcas gol spawnee bola centro, no initial push hasta dar a boton
+/*
+Limites eje Y jugador IA 
+
+cambio de color al chocar con bola
 
 Itween
 */
