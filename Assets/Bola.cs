@@ -101,7 +101,7 @@ private void RespawnBall()
 /*
 Limites eje Y jugador IA 
 
-cambio de color al chocar con bola
+cambio de color al chocar con bola, jugadores nergo bola blanca, jugadores blanco bola negra
 
 Itween
 */
