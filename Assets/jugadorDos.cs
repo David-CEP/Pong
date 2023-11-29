@@ -19,9 +19,28 @@ public class jugadorDos : MonoBehaviour
         if (manual)
         {
             Move();
-        }else
+            if (transform.position.y < -3.25f)
+            {
+                transform.position = new Vector3(transform.position.x, -3.25f, transform.position.z);
+            }
+
+            if (transform.position.y > 3.25f)
+            {
+                transform.position = new Vector3(transform.position.x, 3.25f, transform.position.z);
+            }
+        }
+        else
         {
             transform.position = new Vector3(transform.position.x, pelota.transform.position.y, transform.position.z);
+            if (transform.position.y < -3.25f)
+            {
+                transform.position = new Vector3(transform.position.x, -3.25f, transform.position.z);
+            }
+
+            if(transform.position.y > 3.25f)
+            {
+                transform.position = new Vector3(transform.position.x, 3.25f, transform.position.z);
+            }
         }
     }
 

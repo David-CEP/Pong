@@ -8,6 +8,15 @@ public class jugadorUno : MonoBehaviour
     void Update()
     {
         Move();
+        if (transform.position.y < -3.25f)
+        {
+            transform.position = new Vector3(transform.position.x, -3.25f, transform.position.z);
+        }
+
+        if (transform.position.y > 3.25f)
+        {
+            transform.position = new Vector3(transform.position.x, 3.25f, transform.position.z);
+        }
     }
 
     private void Move()
